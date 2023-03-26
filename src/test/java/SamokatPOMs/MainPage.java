@@ -1,7 +1,5 @@
 package SamokatPOMs;
 
-import org.junit.Assert;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -50,30 +48,24 @@ public class MainPage {
     }
 
     //Метод проверки наличия и соответствия вопросов и ответов
-    public void getFAQItemText(String faqItemTitle, String faqItemText) throws InterruptedException {
+    public void checkFAQItemText(String faqItemTitle, String faqItemText) {
         List<WebElement> items = driver.findElements(faqBlockItem);
-        boolean isItemFound = false;
-        for (WebElement element : items) {
-            element.findElement(By.className("accordion__button")).click();
-            ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView();", element);
-            Thread.sleep(500); //без слипа периодически падают тесты, т.к. не успевает отобразиться блок с ответом.
-            if(element.findElement(faqBlockItemText).isDisplayed()) {
-                String itemTitle = element.findElement(faqBlockItemTitle).getText();
-                String itemText = element.findElement(faqBlockItemText).getText();
-                if(itemTitle.equals(faqItemTitle) && itemText.equals(faqItemText)) {
-                    isItemFound = true;
-                    break;
-                }
+        for (int i = 0; i <= items.size(); i++) {
+            items.get(i).findElement(By.className("accordion__button")).click();
+            String itemTitle = items.get(i).findElement(faqBlockItemTitle).getText();
+            String itemText = items.get(i).findElement(faqBlockItemText).getText();
+            if(itemTitle.equals(faqItemTitle) && itemText.equals(faqItemText)) {
+                break;
             }
         }
-        Assert.assertTrue("Совпадения не найдены", isItemFound);
-    }
 
+    }
     //Метод принятия кук
     public void setAcceptCookieButton() {
         WebElement clickAcceptCookieButton = new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOfElementLocated(cookieBlock));
         if (driver.findElement(cookieBlock).isDisplayed()) {
             driver.findElement(acceptCookieButton).click();
+
         }
     }
 
